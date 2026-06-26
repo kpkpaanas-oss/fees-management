@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ഇമാം ഗസ്സാലി അക്കാദമി - ഫീസ് മാനേജർ</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* ലോഗോ സ്റ്റൈൽ */
+        .logo-container { margin-bottom: 10px; }
+        .academy-logo { width: 120px; height: auto; object-fit: cover; }
+
+        h1 { color: #1e3a8a; margin-top: 10px; margin-bottom: 5px; font-size: 24px; }
+        h2 { color: #555; font-size: 16px; margin-top: 0; margin-bottom: 15px; }
+        
+        /* ഉസ്താദിന്റെ പേര് കാണിക്കുന്ന ബോക്സ് */
+        .usthad-info {
+            background-color: #eff6ff;
+            border: 1px dashed #2563eb;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e40af;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        /* ഒരൊറ്റ വരിയിലുള്ള ടോട്ടൽ ബോക്സ് */
+        .stats-bar { 
+            background-color: #f1f5f9; 
+            padding: 12px; 
+            border-radius: 6px; 
+            border: 1px solid #cbd5e1; 
+            font-size: 16px; 
+            font-weight: bold; 
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+        .stats-bar span { margin: 0 15px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #1e3a8a; color: white; }
+        tr:hover { background-color: #f9fafb; }
+        .fee-input { width: 90px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; text-align: center; font-weight: bold; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status-full { background-color: #d1fae5; color: #065f46; }
+        .status-partial { background-color: #fef3c7; color: #92400e; }
+        .status-none { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-container">
+        <img src="logo.png" alt="ഇമാം ഗസ്സാലി അക്കാദമി ലോഗോ" class="academy-logo" onerror="this.src='https://placehold.co/120x120?text=LOGO'">
+    </div>
+
+    <h1>ഇമാം ഗസ്സാലി അക്കാദമി, മുക്കൂട്</h1>
+    <h2>ഓട്ടോ ഫീസ് മാനേജ്‌മെന്റ് ഡാഷ്‌ബോർഡ്</h2>
+
+    <div class="usthad-info">
+        ഉസ്താദ്: സഅദ് സഖാഫി
+    </div>
+
+    <div class="stats-bar">
+        Total Expected: <span id="totalFee" style="color: #3b82f6;">₹0</span> | 
+        Total Paid: <span id="totalPaid" style="color: #10b981;">₹0</span> | 
+        Total Balance: <span id="totalPending" style="color: #ef4444;">₹0</span>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>റോൾ നമ്പർ</th>
+                <th>വിദ്യാർത്ഥിയുടെ പേര്</th>
+                <th>ആകെ ഫീസ്</th>
+                <th>അടച്ച തുക (₹)</th>
+                <th>ബാക്കി തുക</th>
+                <th>സ്റ്റാറ്റസ്</th>
+            </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+    </table>
+</div>
+
+<script>
+    // കുട്ടികളുടെ ആദ്യ ലിസ്റ്റ്
+    const defaultStudents = [
+        { id: 1, name: "Aboobakar", totalFee: 700, paidAmount: 0 },
+        { id: 2, name: "Fayaz", totalFee: 700, paidAmount: 0 },
+        { id: 3, name: "Hisham", totalFee: 700, paidAmount: 0 },
+        { id: 4, name: "Basith", totalFee: 700, paidAmount: 0 },
+        { id: 5, name: "Azim", totalFee: 700, paidAmount: 0 },
+        { id: 6, name: "Vahid", totalFee: 700, paidAmount: 0 },
+        { id: 7, name: "Razeen", totalFee: 700, paidAmount: 0 },
+        { id: 8, name: "Rihan", totalFee: 700, paidAmount: 0 },
+        { id: 9, name: "Thanseer", totalFee: 700, paidAmount: 0 },
+        { id: 10, name: "Bathisha", totalFee: 700, paidAmount: 0 },
+        { id: 11, name: "Zayan", totalFee: 700, paidAmount: 0 }
+    ];
+
+    // ബ്രൗസറിൽ മുൻപ് സേവ് ചെയ്ത ഡാറ്റ ഉണ്ടോ എന്ന് നോക്കുന്നു, ഇല്ലെങ്കിൽ മുകളിലെ ലിസ്റ്റ് എടുക്കും
+    let students = JSON.parse(localStorage.getItem('feeData')) || defaultStudents;
+
+    const tableBody = document.getElementById('studentTable');
+
+    function updateDashboard() {
+        let grandTotal = 0;
+        let grandPaid = 0;
+        let grandPending = 0;
+
+        tableBody.innerHTML = "";
+
+        students.forEach((student, index) => {
+            let balance = student.totalFee - student.paidAmount;
+            grandTotal += student.totalFee;
+            grandPaid += student.paidAmount;
+            grandPending += balance;
+
+            let statusHTML = '';
+            if (student.paidAmount === student.totalFee) {
+                statusHTML = '<span class="status-badge status-full">Paid</span>';
+            } else if (student.paidAmount > 0) {
+                statusHTML = '<span class="status-badge status-partial">Partial</span>';
+            } else {
+                statusHTML = '<span class="status-badge status-none">Pending</span>';
+            }
+
+            let row = `<tr>
+                <td>${student.id}</td>
+                <td><strong>${student.name}</strong></td>
+                <td>₹${student.totalFee}</td>
+                <td>
+                    <input type="number" class="fee-input" min="0" max="${student.totalFee}" value="${student.paidAmount}" onclick="quickSelect(this)" oninput="updateAmount(${index}, this.value)">
+                </td>
+                <td style="color: ${balance > 0 ? '#ef4444' : '#10b981'}; font-weight: bold;">₹${balance}</td>
+                <td>${statusHTML}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+
+        document.getElementById('totalFee').innerText = "₹" + grandTotal;
+        document.getElementById('totalPaid').innerText = "₹" + grandPaid;
+        document.getElementById('totalPending').innerText = "₹" + grandPending;
+    }
+
+    function quickSelect(inputElement) {
+        if (inputElement.value == 0) {
+            inputElement.value = 500;
+            inputElement.dispatchEvent(new Event('input'));
+        }
+    }
+
+    function updateAmount(index, value) {
+        let amount = parseInt(value) || 0;
+        if (amount > students[index].totalFee) {
+            amount = students[index].totalFee;
+        }
+        students[index].paidAmount = amount;
+        
+        // പുതിയ ഡാറ്റ ബ്രൗസറിലേക്ക് ഓട്ടോമാറ്റിക്കായി സേവ് ചെയ്യാനുള്ള കോഡ്
+        localStorage.setItem('feeData', JSON.stringify(students));
+        
+        let balance = students[index].totalFee - amount;
+        let row = tableBody.rows[index];
+        
+        row.cells[4].innerText = "₹" + balance;
+        row.cells[4].style.color = balance > 0 ? '#ef4444' : '#10b981';
+        
+        if (amount === students[index].totalFee) {
+            row.cells[5].innerHTML = '<span class="status-badge status-full">Paid</span>';
+        } else if (amount > 0) {
+            row.cells[5].innerHTML = '<span class="status-badge status-partial">Partial</span>';
+        } else {
+            row.cells[5].innerHTML = '<span class="status-badge status-none">Pending</span>';
+        }
+        
+        let grandTotal = 0;
+        let grandPaid = 0;
+        let grandPending = 0;
+        students.forEach(s => {
+            grandTotal += s.totalFee;
+            grandPaid += s.paidAmount;
+            grandPending += (s.totalFee - s.paidAmount);
+        });
+        document.getElementById('totalFee').innerText = "₹" + grandTotal;
+        document.getElementById('totalPaid').innerText = "₹" + grandPaid;
+        document.getElementById('totalPending').innerText = "₹" + grandPending;
+    }
+
+    updateDashboard();
+</script>
+
+</body>
+</html>
