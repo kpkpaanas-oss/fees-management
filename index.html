@@ -27,27 +27,12 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* റിപ്പോർട്ട് ഡൗൺലോഡ് ബട്ടൺ സ്റ്റൈൽ */
         .report-btn {
             padding: 10px 20px; font-size: 15px; font-weight: bold; color: white;
             background-color: #dc2626; border: none; border-radius: 6px; cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 5px;
         }
         .report-btn:hover { background-color: #b91c1c; }
-
-        .add-student-form {
-            background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px;
-            border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: center;
-            align-items: center; flex-wrap: wrap; gap: 10px;
-        }
-        .add-student-form input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 14px; }
-        .add-student-form input[type="text"] { width: 200px; }
-        .add-student-form input[type="number"] { width: 100px; }
-        .add-student-btn {
-            background-color: #10b981; color: white; border: none; padding: 8px 16px;
-            border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;
-        }
-        .add-student-btn:hover { background-color: #059669; }
 
         .stats-bar { 
             background-color: #f1f5f9; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; 
@@ -74,10 +59,7 @@
         .status-partial { background-color: #fef3c7; color: #92400e; }
         .status-none { background-color: #fee2e2; color: #991b1b; }
         
-        .delete-btn { background-color: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .delete-btn:hover { background-color: #dc2626; }
-        
-        .receipt-btn { background-color: #2563eb; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-right: 2px; }
+        .receipt-btn { background-color: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
         .receipt-btn:hover { background-color: #1d4ed8; }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
@@ -91,11 +73,10 @@
         .receipt-status-box { text-align: center; margin-top: 15px; padding: 8px; font-weight: bold; border-radius: 6px; font-size: 15px; }
         .print-btn { background-color: #1e3a8a; color: white; width: 100%; padding: 10px; border: none; border-radius: 6px; margin-top: 15px; font-weight: bold; cursor: pointer; }
 
-        /* PDF റിപ്പോർട്ട് എടുക്കുമ്പോൾ ഫോമുകളും ആക്ഷൻ ബട്ടണുകളും തനിയെ ഹൈഡ് ചെയ്യാനുള്ള സ്റ്റൈൽ */
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
-            .month-selector-container, .add-student-form, th:last-child, td:last-child, .delete-btn, .receipt-btn { display: none !important; }
+            .month-selector-container, th:last-child, td:last-child, .receipt-btn { display: none !important; }
             .fee-input, .pay-mode-select, .date-input { border: none; background: transparent; appearance: none; -webkit-appearance: none; font-weight: bold; }
             table { min-width: 100% !important; }
             th { background-color: #1e3a8a !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -106,7 +87,7 @@
 
 <div class="container" id="mainDashboard">
     <div class="logo-container">
-        <img src="logo.jpg" alt="ഇмаം ഗസ്സാലി അക്കാദമി ലോഗോ" class="academy-logo" onerror="this.src='https://placehold.co/140x140?text=Imam+Gazali+Academy'">
+        <img src="c:\Users\USER\Pictures\edits\logo.png.jpeg" alt="ഇമാം ഗസ്സാലി അക്കാദമി ലോഗോ" class="academy-logo" onerror="this.src='https://placehold.co/140x140?text=Imam+Gazali+Academy'">
     </div>
 
     <h1>ഇമാം ഗസ്സാലി അക്കാദമി, മുക്കൂട്</h1>
@@ -132,12 +113,6 @@
         </select>
         
         <button class="report-btn" onclick="printFullReport()">📊 Download Full Report (PDF)</button>
-    </div>
-
-    <div class="add-student-form">
-        <input type="text" id="newStudentName" placeholder="കുട്ടിയുടെ പേര് ടൈപ്പ് ചെയ്യുക">
-        <input type="number" id="newStudentFee" placeholder="ആകെ ഫീസ് (₹)" value="700">
-        <button class="add-student-btn" onclick="addNewStudent()">+ Add Student</button>
     </div>
 
     <div style="font-weight: bold; margin-bottom: 10px; color: #1e40af; font-size: 16px;">
@@ -199,7 +174,6 @@
 </div>
 
 <script>
-    // എല്ലാ 11 കുട്ടികളുടെയും ഒഫീഷ്യൽ മാസ്റ്റർ ലിസ്റ്റ്
     const defaultStudents = [
         { id: 1, name: "Aboobakar", totalFee: 700 },
         { id: 2, name: "Fayaz", totalFee: 700 },
@@ -216,11 +190,8 @@
 
     let currentMonth = "June";
     
-    let studentMasterList = JSON.parse(localStorage.getItem('feeMasterList'));
-    if (!studentMasterList || studentMasterList.length === 0) {
-        studentMasterList = defaultStudents;
-        localStorage.setItem('feeMasterList', JSON.stringify(studentMasterList));
-    }
+    localStorage.setItem('feeMasterList', JSON.stringify(defaultStudents));
+    let studentMasterList = defaultStudents;
     
     let monthlyData = JSON.parse(localStorage.getItem('monthlyFeeRecords')) || {};
     const tableBody = document.getElementById('studentTable');
@@ -289,7 +260,10 @@
                 <td><strong>${student.name}</strong></td>
                 <td>₹${student.totalFee}</td>
                 <td>
-                    <input type="number" class="fee-input" min="0" max="${student.totalFee}" value="${paidAmount}" onclick="quickSelect(this, ${student.id})" oninput="updateAmount(${index}, ${student.id}, this.value)">
+                    <input type="number" class="fee-input" min="0" max="${student.totalFee}" value="${paidAmount}" 
+                           onfocus="clearOnFocus(this)" 
+                           onblur="resetOnBlur(this, ${student.id})"
+                           oninput="updateAmount(${index}, ${student.id}, this.value)">
                 </td>
                 <td>
                     <select class="pay-mode-select ${payMode === 'G-Pay' ? 'mode-gpay' : 'mode-cash'}" onchange="updateMode(${student.id}, this.value)">
@@ -304,7 +278,6 @@
                 <td>${statusHTML}</td>
                 <td>
                     <button class="receipt-btn" onclick="generateReceipt(${student.id}, '${student.name}', ${student.totalFee})">Receipt</button>
-                    <button class="delete-btn" onclick="deleteStudent(${index}, ${student.id})">Delete</button>
                 </td>
             </tr>`;
             tableBody.innerHTML += row;
@@ -322,17 +295,27 @@
         updateDashboard();
     }
 
-    function quickSelect(inputElement, studentId) {
-        if (inputElement.value == 0) {
-            inputElement.value = 500;
-            if(!monthlyData[currentMonth][studentId].payDate) {
-                monthlyData[currentMonth][studentId].payDate = getTodayDateString();
-            }
-            inputElement.dispatchEvent(new Event('input'));
+    // ക്ലിക്ക് ചെയ്യുമ്പോൾ '0' ഉണ്ടെങ്കിൽ അത് തനിയെ ക്ലിയർ ചെയ്യാനുള്ള ഫങ്ഷൻ
+    function clearOnFocus(inputElement) {
+        if (inputElement.value == "0") {
+            inputElement.value = "";
+        }
+    }
+
+    // ബോക്സിന് വെളിയിൽ ക്ലിക്ക് ചെയ്യുമ്പോൾ വാല്യൂ ഇല്ലെങ്കിൽ അത് തിരിച്ച് '0' ആക്കാനുള്ള ഫങ്ഷൻ
+    function resetOnBlur(inputElement, studentId) {
+        if (inputElement.value === "") {
+            inputElement.value = "0";
+            monthlyData[currentMonth][studentId].paidAmount = 0;
+            monthlyData[currentMonth][studentId].payDate = "";
+            saveData();
+            updateDashboard();
         }
     }
 
     function updateAmount(index, studentId, value) {
+        if (value === "") return; // ടൈപ്പ് ചെയ്യുന്നതിനിടയിൽ ബ്ലാങ്ക് ആയാൽ തൽക്കാലം സ്കിപ്പ് ചെയ്യും
+        
         let amount = parseInt(value) || 0;
         let maxFee = studentMasterList[index].totalFee;
         if (amount > maxFee) { amount = maxFee; }
@@ -346,7 +329,36 @@
         }
         
         saveData();
-        updateDashboard();
+        // ഡാഷ്‌ബോർഡ് ലൈവ് ആയി അപ്ഡേറ്റ് ചെയ്യും പക്ഷേ ഫോക്കസ് നഷ്ടപ്പെടില്ല
+        let record = monthlyData[currentMonth][studentId];
+        let balance = maxFee - amount;
+        
+        // ടോട്ടൽ കാൽക്കുലേഷൻസ് മാത്രം ബാക്ക്ഗ്രൗണ്ടിൽ അപ്ഡേറ്റ് ചെയ്യുക
+        recalculateTotals();
+    }
+
+    function recalculateTotals() {
+        let grandPaid = 0;
+        let grandPending = 0;
+        let grandCash = 0;
+        let grandGpay = 0;
+
+        studentMasterList.forEach(student => {
+            let record = monthlyData[currentMonth][student.id] || { paidAmount: 0, payMode: "Cash" };
+            let paidAmount = record.paidAmount;
+            let balance = student.totalFee - paidAmount;
+
+            grandPaid += paidAmount;
+            grandPending += balance;
+
+            if (record.payMode === "Cash") { grandCash += paidAmount; } 
+            else if (record.payMode === "G-Pay") { grandGpay += paidAmount; }
+        });
+
+        document.getElementById('totalPaid').innerText = "₹" + grandPaid;
+        document.getElementById('totalCash').innerText = "₹" + grandCash;
+        document.getElementById('totalGpay').innerText = "₹" + grandGpay;
+        document.getElementById('totalPending').innerText = "₹" + grandPending;
     }
 
     function updateMode(studentId, mode) {
@@ -360,7 +372,6 @@
         saveData();
     }
 
-    // ഫുൾ റിപ്പോർട്ട് പിഡിഎഫ് പ്രിന്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
     function printFullReport() {
         window.print();
     }
@@ -396,3 +407,13 @@
     function closeReceipt() {
         document.getElementById('receiptModal').style.display = "none";
     }
+
+    function saveData() {
+        localStorage.setItem('monthlyFeeRecords', JSON.stringify(monthlyData));
+    }
+
+    updateDashboard();
+</script>
+
+</body>
+</html>
