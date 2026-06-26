@@ -18,7 +18,7 @@
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #1e3a8a; color: white; }
         tr:hover { background-color: #f9fafb; }
-        .fee-input { width: 80px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-align: center; }
+        .fee-input { width: 90px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; text-align: center; font-weight: bold; }
         .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
         .status-full { background-color: #d1fae5; color: #065f46; }
         .status-partial { background-color: #fef3c7; color: #92400e; }
@@ -53,7 +53,7 @@
 </div>
 
 <script>
-    // കുട്ടികളുടെ ലിസ്റ്റ് (എല്ലാവർക്കും ആകെ ഫീസ് 700 രൂപ, ആദ്യം അടച്ച തുക 0)
+    // കുട്ടികളുടെ ലിസ്റ്റ് (എല്ലാവർക്കും ആകെ ഫീസ് 700 രൂപ)
     const students = [
         { id: 1, name: "Aboobakar", totalFee: 700, paidAmount: 0 },
         { id: 2, name: "Fayaz", totalFee: 700, paidAmount: 0 },
@@ -97,7 +97,7 @@
                 <td><strong>${student.name}</strong></td>
                 <td>₹${student.totalFee}</td>
                 <td>
-                    <input type="number" class="fee-input" min="0" max="${student.totalFee}" value="${student.paidAmount}" oninput="updateAmount(${index}, this.value)">
+                    <input type="number" class="fee-input" min="0" max="${student.totalFee}" value="${student.paidAmount}" onclick="quickSelect(this)" oninput="updateAmount(${index}, this.value)">
                 </td>
                 <td style="color: ${balance > 0 ? '#ef4444' : '#10b981'}; font-weight: bold;">₹${balance}</td>
                 <td>${statusHTML}</td>
@@ -110,13 +110,49 @@
         document.getElementById('totalPending').innerText = "₹" + grandPending;
     }
 
+    // ബോക്സിൽ ക്ലിക്ക് ചെയ്യുമ്പോൾ ഒറ്റയടിക്ക് 500 വരാൻ വേണ്ടി
+    function quickSelect(inputElement) {
+        if (inputElement.value == 0) {
+            inputElement.value = 500;
+            // ജാവസ്ക്രിപ്റ്റിനെ വിവരം അറിയിക്കാൻ
+            inputElement.dispatchEvent(new Event('input'));
+        }
+    }
+
     function updateAmount(index, value) {
         let amount = parseInt(value) || 0;
         if (amount > students[index].totalFee) {
             amount = students[index].totalFee;
         }
         students[index].paidAmount = amount;
-        updateDashboard();
+        
+        // ടോട്ടൽ തുകകൾ ലൈവായി മാറാൻ പക്ഷെ ഇൻപുട്ട് ബോക്സ് റീസെറ്റ് ആവാതിരിക്കാൻ
+        let balance = students[index].totalFee - amount;
+        let row = tableBody.rows[index];
+        
+        row.cells[4].innerText = "₹" + balance;
+        row.cells[4].style.color = balance > 0 ? '#ef4444' : '#10b981';
+        
+        if (amount === students[index].totalFee) {
+            row.cells[5].innerHTML = '<span class="status-badge status-full">Full Paid</span>';
+        } else if (amount > 0) {
+            row.cells[5].innerHTML = '<span class="status-badge status-partial">Partial</span>';
+        } else {
+            row.cells[5].innerHTML = '<span class="status-badge status-none">Pending</span>';
+        }
+        
+        // മുകളിലെ പ്രധാന ബോക്സുകൾ മാറ്റാൻ
+        let grandTotal = 0;
+        let grandPaid = 0;
+        let grandPending = 0;
+        students.forEach(s => {
+            grandTotal += s.totalFee;
+            grandPaid += s.paidAmount;
+            grandPending += (s.totalFee - s.paidAmount);
+        });
+        document.getElementById('totalFee').innerText = "₹" + grandTotal;
+        document.getElementById('totalPaid').innerText = "₹" + grandPaid;
+        document.getElementById('totalPending').innerText = "₹" + grandPending;
     }
 
     updateDashboard();
